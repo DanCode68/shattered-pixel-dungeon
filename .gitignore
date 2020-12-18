@@ -18,3 +18,10 @@ local.properties
 #intellij project files
 *.iml
 *.idea
+
+#personal changelog
+CHANGES.txt
+
+#personal makefiles
+make_debug.bat
+make_release.bat
