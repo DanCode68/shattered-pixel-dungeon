@@ -94,7 +94,7 @@ abstract public class MissileWeapon extends Weapon {
 	}
 	
 	public int STRReq(int lvl){
-		return STRReq(tier, lvl) - 1; //1 less str than normal for their tier
+		return STRReq(tier, lvl);
 	}
 	
 	@Override
