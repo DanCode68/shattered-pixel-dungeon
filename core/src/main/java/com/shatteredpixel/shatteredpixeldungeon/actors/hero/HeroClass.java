@@ -65,7 +65,6 @@ import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingKn
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.missiles.ThrowingStone;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.DeviceCompat;
-import com.shatteredpixel.shatteredpixeldungeon.items.DewVial;
 
 public enum HeroClass {
 
@@ -123,12 +122,6 @@ public enum HeroClass {
 				break;
 			}
 		}
-
-		DewVial vial = new DewVial();
-		vial.collect();								//give the dew vial to the player at the start of the game
-		Dungeon.LimitedDrops.DEW_VIAL.drop();		//log the addition of the dew vial so it doesn't show up as an item in the dungeon
-		//Dungeon.quickslot.setSlot(3, vial);		//optional; put the player's dew vial in their 4th quickslot
-
 	}
 
 	public Badges.Badge masteryBadge() {
