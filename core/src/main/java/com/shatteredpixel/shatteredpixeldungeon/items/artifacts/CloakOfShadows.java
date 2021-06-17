@@ -41,7 +41,6 @@ import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.BuffIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.watabou.noosa.audio.Sample;
-import com.watabou.noosa.tweeners.AlphaTweener;
 import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
@@ -93,18 +92,15 @@ public class CloakOfShadows extends Artifact {
 					Sample.INSTANCE.play(Assets.Sounds.MELD);
 					activeBuff = activeBuff();
 					activeBuff.attachTo(hero);
-					if (hero.sprite.parent != null) {
-						hero.sprite.parent.add(new AlphaTweener(hero.sprite, 0.4f, 0.4f));
-					} else {
-						hero.sprite.alpha(0.4f);
-					}
 					Talent.onArtifactUsed(Dungeon.hero);
 					hero.sprite.operate(hero.pos);
 				}
 			} else {
 				activeBuff.detach();
 				activeBuff = null;
-				hero.spend( 1f );
+				if (hero.buff(Preparation.class) != null){
+					hero.buff(Preparation.class).detach();
+				}
 				hero.sprite.operate( hero.pos );
 			}
 
@@ -114,7 +110,7 @@ public class CloakOfShadows extends Artifact {
 	@Override
 	public void activate(Char ch){
 		super.activate(ch);
-		if (activeBuff != null){
+		if (activeBuff != null && activeBuff.target == null){
 			activeBuff.attachTo(ch);
 		}
 	}
@@ -122,8 +118,11 @@ public class CloakOfShadows extends Artifact {
 	@Override
 	public boolean doUnequip(Hero hero, boolean collect, boolean single) {
 		if (super.doUnequip(hero, collect, single)){
-			if (hero.hasTalent(Talent.LIGHT_CLOAK)){
-				activate(hero);
+			if (!collect || !hero.hasTalent(Talent.LIGHT_CLOAK)){
+				if (activeBuff != null){
+					activeBuff.detach();
+					activeBuff = null;
+				}
 			}
 
 			return true;
@@ -151,7 +150,7 @@ public class CloakOfShadows extends Artifact {
 			passiveBuff.detach();
 			passiveBuff = null;
 		}
-		if (activeBuff != null){
+		if (activeBuff != null && !isEquipped((Hero) activeBuff.target)){
 			activeBuff.detach();
 			activeBuff = null;
 		}
@@ -170,7 +169,7 @@ public class CloakOfShadows extends Artifact {
 	@Override
 	public void charge(Hero target, float amount) {
 		if (charge < chargeCap) {
-			if (!isEquipped(target)) amount *= target.pointsInTalent(Talent.LIGHT_CLOAK)/10f;
+			if (!isEquipped(target)) amount *= 0.4f*target.pointsInTalent(Talent.LIGHT_CLOAK)/3f;
 			partialCharge += 0.25f*amount;
 			if (partialCharge >= 1){
 				partialCharge--;
@@ -226,7 +225,7 @@ public class CloakOfShadows extends Artifact {
 					turnsToCharge /= RingOfEnergy.artifactChargeMultiplier(target);
 					float chargeToGain = (1f / turnsToCharge);
 					if (!isEquipped(Dungeon.hero)){
-						chargeToGain *= 0.1f*Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK);
+						chargeToGain *= 0.4f*Dungeon.hero.pointsInTalent(Talent.LIGHT_CLOAK)/3f;
 					}
 					partialCharge += chargeToGain;
 				}
